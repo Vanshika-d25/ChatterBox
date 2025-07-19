@@ -16,9 +16,9 @@ ChatterBox is a real-time chatting web application built with **Vite**, **Socket
 
 ## 📸 Screenshot
 
-![ChatterBox Screenshot](./assets/ChatterBox_img.jpg)
+![ChatterBox Screenshot](./assets/ChatterBox_img1.jpg)
+![ChatterBox Screenshot](./assets/ChatterBox_img2.jpg)
 
-> 📌 Make sure the image path is correct. You can create an `assets` folder and add your screenshot as `screenshot.png`.
 
 ---
 
@@ -27,7 +27,7 @@ ChatterBox is a real-time chatting web application built with **Vite**, **Socket
 - Frontend: `React` (with Vite)
 - Backend: `Node.js`, `Express`
 - Real-time: `Socket.io`
-- Styling: `Tailwind CSS` (or your stack)
+- Styling: `Bootstrap`
 
 ---
 
