@@ -1,7 +1,7 @@
 // src/App.jsx
 import React, { useState } from 'react';
-import Chat from './Chat';
 import { v4 as uuidv4 } from 'uuid';
+import Chat from './Chat';
 import Header from './components/Header';
 
 function App() {
@@ -9,29 +9,37 @@ function App() {
   const [room, setRoom] = useState('');
   const [showChat, setShowChat] = useState(false);
 
+  // Join existing chat room
   const joinRoom = () => {
-    if (username !== '' && room !== '') {
+    if (username.trim() && room.trim()) {
       setShowChat(true);
     }
   };
 
+  // Create a new chat room with a unique ID
   const createRoom = () => {
-    if (username !== '') {
-      const newRoomId = uuidv4(); // generate unique room ID
+    if (username.trim()) {
+      const newRoomId = uuidv4();
       setRoom(newRoomId);
       setShowChat(true);
     }
   };
 
   return (
-    <div className="container mt-5 d-flex justify-content-center align-items-center min-vh-100" style={{
- 
-  background: 'linear-gradient(to right, #e0f7fa, #b2ebf2)',
-  minHeight: '100vh',
-}}>
+    <div
+      className="container mt-5 d-flex justify-content-center align-items-center min-vh-100"
+      style={{
+        background: 'linear-gradient(to right, #e0f7fa, #b2ebf2)',
+        minHeight: '100vh',
+      }}
+    >
       {!showChat ? (
-        <div className="card p-5 shadow-lg rounded-4 border-0 bg-light" style={{ maxWidth: '500px', width: '100%' }}>
+        <div
+          className="card p-5 shadow-lg rounded-4 border-0 bg-light"
+          style={{ maxWidth: '500px', width: '100%' }}
+        >
           <Header />
+
           <input
             type="text"
             className="form-control mb-3 rounded-pill shadow-sm"
@@ -49,10 +57,17 @@ function App() {
           />
 
           <div className="d-grid gap-3">
-            <button className="btn btn-primary btn-lg rounded-pill shadow-sm" onClick={joinRoom}>
+            <button
+              className="btn btn-primary btn-lg rounded-pill shadow-sm"
+              onClick={joinRoom}
+            >
               💬 Join Room
             </button>
-            <button className="btn btn-success btn-lg rounded-pill shadow-sm" onClick={createRoom}>
+
+            <button
+              className="btn btn-success btn-lg rounded-pill shadow-sm"
+              onClick={createRoom}
+            >
               🌟 Create New Room
             </button>
           </div>
@@ -65,3 +80,5 @@ function App() {
 }
 
 export default App;
+
+//make code more clean and readable
