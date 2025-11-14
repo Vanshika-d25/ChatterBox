@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:6001'); // Update if backend is hosted elsewhere
@@ -6,6 +6,9 @@ const socket = io('http://localhost:6001'); // Update if backend is hosted elsew
 function Chat({ username, room }) {
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
+  const [listening, setListening] = useState(false);
+
+  const recognitionRef = useRef(null);
 
   useEffect(() => {
     socket.emit('join_room', room);
@@ -34,11 +37,71 @@ function Chat({ username, room }) {
     }
   };
 
+  // -------------------------
+  // 🎤 VOICE RECOGNITION SETUP
+  // -------------------------
+  useEffect(() => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      console.warn("Speech Recognition not supported in this browser.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+
+    recognition.lang = "en-US"; // You can change this or make it dynamic
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      setListening(true);
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech Recognition Error:", event.error);
+      setListening(false);
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+
+      // Add voice transcription to input box
+      setMessage(transcript);
+
+      // OPTIONAL: Automatically send after speaking
+      sendMessage();
+    };
+  }, []);
+
+  const toggleListening = () => {
+    if (!recognitionRef.current) {
+      alert("Speech Recognition is not supported in this browser.");
+      return;
+    }
+
+    if (!listening) {
+      recognitionRef.current.start();
+    } else {
+      recognitionRef.current.stop();
+    }
+  };
+
   return (
     <div className="container mt-4">
       <div className="text-center mb-4">
-        <h4 className="text-primary">💬 Welcome to Room: <span className="text-dark">{room}</span></h4>
-        <p className="text-muted">You are chatting as <strong>{username}</strong> ✨</p>
+        <h4 className="text-primary">
+          💬 Welcome to Room: <span className="text-dark">{room}</span>
+        </h4>
+        <p className="text-muted">
+          You are chatting as <strong>{username}</strong> ✨
+        </p>
       </div>
 
       <div
@@ -49,19 +112,27 @@ function Chat({ username, room }) {
           <div
             key={index}
             className={`mb-2 p-2 px-3 rounded-3 w-75 ${
-              msg.author === username ? 'ms-auto bg-success text-white' : 'me-auto bg-light text-dark'
+              msg.author === username
+                ? 'ms-auto bg-success text-white'
+                : 'me-auto bg-light text-dark'
             }`}
             style={{ maxWidth: '75%' }}
           >
             <div className="fw-semibold">{msg.author}</div>
             <div>{msg.message}</div>
-            <div className="text-end" style={{ fontSize: '0.75em', opacity: 0.7 }}>
+            <div
+              className="text-end"
+              style={{ fontSize: '0.75em', opacity: 0.7 }}
+            >
               {msg.time}
             </div>
           </div>
         ))}
       </div>
 
+      {/* ----------------------- */}
+      {/* Input + Send + MIC UI   */}
+      {/* ----------------------- */}
       <div className="input-group">
         <input
           type="text"
@@ -71,6 +142,16 @@ function Chat({ username, room }) {
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
         />
+
+        {/* 🎤 MIC BUTTON */}
+        <button
+          className={`btn ${listening ? 'btn-danger' : 'btn-secondary'} px-3`}
+          onClick={toggleListening}
+          title="Voice Input"
+        >
+          {listening ? '🎙️ Listening...' : '🎤'}
+        </button>
+
         <button
           className="btn btn-success rounded-end-pill px-4 shadow-sm"
           onClick={sendMessage}
