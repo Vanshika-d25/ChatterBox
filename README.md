@@ -16,8 +16,10 @@ ChatterBox is a real-time chatting web application built with **Vite**, **Socket
 
 ## 📸 Screenshot
 
-![ChatterBox Screenshot](./assets/ChatterBox_img1.jpg)
+![ChatterBox Screenshot](./assets/First.jpg)
 ![ChatterBox Screenshot](./assets/ChatterBox_img2.jpg)
+![ChatterBox Screenshot](./assets/Voice.jpg)
+
 
 
 ---
